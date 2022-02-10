@@ -28,7 +28,7 @@ OpenCV makes, it does so carelessly, and immediately goes out of bounds, causing
 After talking with various people from the Unreal Engine Discord, I came up with 3 main (C++) ways to fix the problem, and one
 language specific way (Python) to remedy the issue as well, at the cost of speed and portability to iOS.
 
-Solution 1: 
+**Solution 1**: 
   This first solution relies on the openCV implementation being given it's own thread to work within.
   If openCV is running on it's own thread (by tying it to an actor or widget component and then instantiating that on a separate thread)
   you can call sleep() or pause() just before unreal goes to clean the thread up. This allows for the indefinite suspension of that thread
@@ -39,7 +39,7 @@ Solution 1:
   the program runs long enough, but can be, like I said before, implemented quickly, and is suitable for a modular program, where each module
   only runs for a small period of time before closing, subsiquently crashing, and handling the crash within Unreal as a proper exit.
   
-Solution 2:
+**Solution 2**:
   The second solution is to do the same thing (giving OpenCV it's own thread), but to kill the thread forcefully before unreal can clean it.
   I found it was easy to do in linux with systemV calls, but never tried to implement a Windows version. However, I'm willing to bet that 
   there is likely a blueprint implementation of threading in the unreal marketplace that probably has a kill() method included with it.
@@ -49,7 +49,7 @@ Solution 2:
   threads dangling throughout executon, and while each thread definitely crashes (it's a forced kill), this can be easily ignored since you 
   called the forced kill.
   
-Solution 3:
+**Solution 3**:
   The final way I came up with, which is the most correct way to do it, is to wrap openCV in another library that can handle the cleanup and then 
   allow unreal engine to clean that secondary library up. This can be implemented from scratch, or you could include a module unrelated to the 
   project for the sole purpose of properly cleaning up the vectors before getting cleaned itself by Unreal Engine. This is the only implementation
@@ -57,7 +57,7 @@ Solution 3:
   which can cause instability if managed badly, an of course can increase the final executable size if a large and robust package is used to clean the 
   vectors.
   
-Solution 4:
+**Solution 4**:
   The final solution is not what I consider a 'solution' to the problem, but is a suitable workaround. There is a library for Unreal
   that enables the addition of a python VM to the project. This VM has full communication between python scripts and blueprints, which in
   turn can communicate with C++, forming a bridge between Unreal Engine and OpenCV Python. 
